@@ -10,7 +10,7 @@ Open an R session, type the following command and select a CRAN mirror when prom
 
 `install.packages("devtools")`
 
-#### FlowCore
+#### Bioconductor packages
 
 Open an R session and type the following commands
 
