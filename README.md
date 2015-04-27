@@ -17,7 +17,7 @@ Open an R session and type the following commands
 ```
 source("http://bioconductor.org/biocLite.R")
 biocLite(c("AnnotationDbi", "AnnotationFuncs", "BSgenome", "BSgenome.Hsapiens.UCSC.hg19", 
-"Biostrings", "GenomicFeatures", "GenomicRanges", "IRanges")
+"Biostrings", "GenomicFeatures", "GenomicRanges", "IRanges"))
 
 ```
 
