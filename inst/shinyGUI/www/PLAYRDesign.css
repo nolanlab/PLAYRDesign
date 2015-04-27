@@ -1,0 +1,48 @@
+
+body {
+      font: 10px sans-serif;
+}
+
+
+#tag {
+color: white;
+background: #FA283D;
+position: absolute;
+display: none;
+padding:3px 6px;
+    margin-left: -80px;
+    font-size: 11px;
+}
+
+
+
+
+
+.axis path,
+.axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+}
+
+.line1 {
+      fill: none;
+      stroke: steelblue;
+      stroke-width: 1.5px;
+}
+
+.line2 {
+      fill: none;
+      stroke: red;
+      stroke-width: 1.5px;
+}
+
+.line3 {
+      fill: none;
+      stroke: green;
+      stroke-width: 1.5px;
+}
+
+
+
+
