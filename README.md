@@ -16,7 +16,8 @@ Open an R session and type the following commands
 
 ```
 source("http://bioconductor.org/biocLite.R")
-biocLite(c("AnnotationDbi", "AnnotationFuncs", "BSgenome", "BSgenome.Hsapiens.UCSC.hg19", "Biostrings", "GenomicFeatures", "GenomicRanges", "IRanges")
+biocLite(c("AnnotationDbi", "AnnotationFuncs", "BSgenome", "BSgenome.Hsapiens.UCSC.hg19", 
+"Biostrings", "GenomicFeatures", "GenomicRanges", "IRanges")
 
 ```
 
@@ -27,7 +28,7 @@ Copy the token, start an R session and type the following commands, substituing 
 
 ```
 library(devtools)
-install_github("nolanlab/scaffold", auth_token = "YOUR TOKEN HERE")
+install_github("nolanlab/PLAYRDesign", auth_token = "YOUR TOKEN HERE")
 ```
 
 This will install the PLAYRDesign R package together with all the required dependencies. If evertyhing was successful you should be able to start PLAYRDesign by typing the following commands
