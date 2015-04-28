@@ -3,7 +3,7 @@ Title: PLAYRDesign
 Description: "A tool to design probes for the PLAYR technology"
 Version: 0.1
 Authors@R: "Pier Federico Gherardini <federico.gherardini@gmail.com> [aut, cre]"
-Depends:
+Depends: R (>= 3.0)
 License: GPL-2
 Imports: AnnotationDbi,AnnotationFuncs,BSgenome,BSgenome.Hsapiens.UCSC.hg19,Biostrings,GenomicFeatures,GenomicRanges,IRanges,XML,org.Hs.eg.db,plyr,reshape2,shiny,zoo
 LazyData: true
