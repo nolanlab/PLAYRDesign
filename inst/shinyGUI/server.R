@@ -101,7 +101,7 @@ shinyServer(function(input, output, session)
       output$RLADesignUI <- render_ui(working.dir, input, output, session)
       
       print("Loading EST data...")
-      gr.est <- readRDS(system.file("spliced_est_hg19.RData", package = "RLADesign"))
+      gr.est <- readRDS(system.file("spliced_est_hg19.RData", package = "PLAYRDesign"))
       print("Done")
       
       cur_primer3_data <- NULL
