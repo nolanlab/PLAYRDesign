@@ -28,6 +28,9 @@ Download the latest version of Primer3 from [here](http://primer3.sourceforge.ne
 system("primer3_core")
 ```
 
+## Install BLAST
+
+
 
 
 
