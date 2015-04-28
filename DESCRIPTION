@@ -5,8 +5,7 @@ Version: 0.1
 Authors@R: "Pier Federico Gherardini <federico.gherardini@gmail.com> [aut, cre]"
 Depends:
 License: GPL-2
-Imports:
-      AnnotationDbi,
+Imports: AnnotationDbi,
       AnnotationFuncs,
       BSgenome,
       BSgenome.Hsapiens.UCSC.hg19,
