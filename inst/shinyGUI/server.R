@@ -54,8 +54,8 @@ render_ui <- function(working.dir, ...){renderUI({
                   ),
                   column(8,
                          singleton(tags$head(tags$script(src = "http://d3js.org/d3.v3.min.js"))),
-                         singleton(tags$head(tags$script(src = "RLADesign.js"))),
-                         singleton(tags$head(tags$link(rel = 'stylesheet', type = 'text/css', href = 'RLADesign.css'))),
+                         singleton(tags$head(tags$script(src = "PLAYRDesign.js"))),
+                         singleton(tags$head(tags$link(rel = 'stylesheet', type = 'text/css', href = 'PLAYRDesign.css'))),
                          reactiveGraph(outputId = "main_graph")
                   )
             )
@@ -66,12 +66,12 @@ render_ui <- function(working.dir, ...){renderUI({
 get_data_for_graph <- function(f_name, to_report, len, tm, gc, product_size)
 {
       print(f_name)
-      blast_refseq <- RLADesign:::run_blast_analysis_for_seq(f_name, db = "rna_human_high_qual.fa", filter_same_gi = TRUE)
-      blast_repbase <- RLADesign:::run_blast_analysis_for_seq(f_name, db = "repbase.fa", filter_same_gi = FALSE)
+      blast_refseq <- PLAYRDesign:::run_blast_analysis_for_seq(f_name, db = "rna_human_high_qual.fa", filter_same_gi = TRUE)
+      blast_repbase <- PLAYRDesign:::run_blast_analysis_for_seq(f_name, db = "repbase.fa", filter_same_gi = FALSE)
       blast <- data.frame(pos = blast_repbase$pos, blast1 = blast_refseq$percIdentity, blast2 = blast_repbase$percIdentity)
-      primer3 <- RLADesign:::run_primer3(f_name, 
+      primer3 <- PLAYRDesign:::run_primer3(f_name, 
                         n = to_report, len = len, tm = tm, gc = gc, product_size = product_size)
-      seq_char <- RLADesign:::get_sequence_characteristics(f_name)
+      seq_char <- PLAYRDesign:::get_sequence_characteristics(f_name)
 
       return(list(blast = blast, primer3 = primer3$tab_primers, seq_char = seq_char))
       
@@ -83,13 +83,13 @@ get_data_for_graph <- function(f_name, to_report, len, tm, gc, product_size)
 do_est_analysis <- function(f_name, gr.est)
 {
       
-      id <- RLADesign:::get_refseq_id_from_fasta(f_name)
-      gr <- RLADesign:::get_exons_for_transcript(id)
-      v <- RLADesign:::get_exons_skips(gr, gr.est)
-      orig.seq <- RLADesign:::get_seq_from_file(f_name)
-      genomic.seq <- RLADesign:::get_seq_from_ranges(gr)
+      id <- PLAYRDesign:::get_refseq_id_from_fasta(f_name)
+      gr <- PLAYRDesign:::get_exons_for_transcript(id)
+      v <- PLAYRDesign:::get_exons_skips(gr, gr.est)
+      orig.seq <- PLAYRDesign:::get_seq_from_file(f_name)
+      genomic.seq <- PLAYRDesign:::get_seq_from_ranges(gr)
       
-      ret <- RLADesign:::project_data_on_seq(orig.seq, genomic.seq, v)
+      ret <- PLAYRDesign:::project_data_on_seq(orig.seq, genomic.seq, v)
       ret <- data.frame(pos = 1:length(orig.seq), exon_skip = ret)
       return(ret)
 }
@@ -98,7 +98,7 @@ do_est_analysis <- function(f_name, gr.est)
 shinyServer(function(input, output, session)
 {
       working.dir <- dirname(file.choose())
-      output$RLADesignUI <- render_ui(working.dir, input, output, session)
+      output$PLAYRDesignUI <- render_ui(working.dir, input, output, session)
       
       print("Loading EST data...")
       gr.est <- readRDS(system.file("spliced_est_hg19.RData", package = "PLAYRDesign"))

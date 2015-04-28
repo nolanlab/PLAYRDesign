@@ -1,6 +1,6 @@
 
 shinyUI(
-      uiOutput("RLADesignUI")
+      uiOutput("PLAYRDesignUI")
 )
 
 
