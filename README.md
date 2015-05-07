@@ -28,7 +28,10 @@ Download the latest version of Primer3 from [here](http://primer3.sourceforge.ne
 system("primer3_core")
 ```
 
-## Install BLAST
+## Install BLAST+
+
+The installation of BLAST+ could be the subject of an entire book. Only minimal instructions are given here for the purpose of setting up a barebones BLAST+ environment that will interact with PLAYRDesign. First download BLAST+ [here](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download). You will then need to specify the location where you want your BLAST+ sequence database to be stored. The setup procedure differs according to the platform you are using, please refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK1762/) for details. PLAYRDesign makes use of two sequence databases, which need to have these **exact** names:
+
 
 
 
