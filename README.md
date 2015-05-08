@@ -68,6 +68,19 @@ makeblastdb -in rna_human_high_qual.fa
 
 ```
 
+If everythin was successfult you should be able to type the following commands in an R session
+
+```
+system("blastn -db repbase.fa")
+system("blastn -db rna_human_high_qual.fa")
+```
+
+and get the following error message, which indicates that R can find your *blastn* executable and your database file, even though not input sequence is provided
+
+```
+Command line argument error: Query is Empty!
+```
+
 
 If evertyhing was successful you should be able to start PLAYRDesign by typing the following commands
 
