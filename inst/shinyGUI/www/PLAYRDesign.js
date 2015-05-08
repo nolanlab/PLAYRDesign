@@ -129,35 +129,6 @@ function drawRects(svg, theArray, theGap, theBarHeight, w, h, posScale)
                   else
                         Shiny.onInputChange("click_select_oligo", d.name);
             });
-   
-    
-    
-    /*
-    innerRects.on('mouseover', function(e) {
-                  var tag = "";
-                  
-                  if (d3.select(this).data()[0].details != undefined)
-                  {
-                        tag = "Name: " + d3.select(this).data()[0].name + "<br/>" +
-                        "Start: " + d3.select(this).data()[0].start + "<br/>" +
-                        "End: " + d3.select(this).data()[0].end + "<br/>" +
-                        "Details: " + d3.select(this).data()[0].details;
-                  }
-                  
-
-                  var output = document.getElementById("tag");
-                  
-                  var x = (this.x.animVal.value + this.width.animVal.value/2) + "px";
-                  var y = this.y.animVal.value + 25 + "px";
-                  
-                  output.innerHTML = tag;
-                  output.style.top = y;
-                  output.style.left = x;
-                  output.style.display = "block";
-                  }).on('mouseout', function() {
-                        var output = document.getElementById("tag");
-                        output.style.display = "none";
-                    });*/
 }
 
 
@@ -320,11 +291,6 @@ $.extend(graphOutputBinding, {
                   
                   
                   
-            //var svg = d3.select("body").append("svg")
-            //      .attr("width", width + margin.left + margin.right)
-            //      .attr("height", height + margin.top + margin.bottom)
-            //      .append("g")
-            //      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             //remove the old graph
             var svg = d3.select(el).select("svg");

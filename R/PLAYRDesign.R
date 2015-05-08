@@ -21,6 +21,14 @@ PLAYRDesign.run <- function()
       runApp(appDir = file.path(system.file(package = "PLAYRDesign"), "shinyGUI"), launch.browser=T)
 }
 
+#' @export
+PLAYRDesign.filter_refseq_file <- function(in_name, out_name)
+{
+      db <- readDNAStringSet(in_name)
+      sel <- grepl("NM_|NR_", names(db))
+      db <- db[sel]
+      writeXStringSet(db, file = out_name, format = "fasta", width = 80)
+}
 
 my_load <- function(f_name)
 {
@@ -48,11 +56,7 @@ load_est <- function(f_name)
       
 }
 
-load_hexeventdb <- function(f_name) 
-{
-      ret <- read.table(f_name, header = T, sep = "\t", quote = "", stringsAsFactors = F, comment.char = "")
-      ret <- ret[, c("chromo", "strand", "start", "end", "count", "constitLevel", "OnlyESTexons", "genename")]
-}
+
 
 
 
@@ -488,37 +492,7 @@ data_frame_factor_to_char <- function(df)
       return(df)
 }
       
-      
-parse_blast_result_xml <- function(f_name)
-{
-      result <- xmlTreeParse(f_name, useInternalNodes=TRUE,
-                              error = xmlErrorCumulator(immediate=FALSE))
-      parse_single_hit <- function(x)
-      {
-            id <- unlist(xpathApply(x,  "./Hit_id", xmlValue))
-            nums <- unlist(xpathApply(x,  "./Hit_hsps/Hsp/Hsp_num", xmlValue))
-            qseq <- unlist(xpathApply(x,  "./Hit_hsps/Hsp/Hsp_qseq", xmlValue))
-            hseq <- unlist(xpathApply(x,  "./Hit_hsps/Hsp/Hsp_hseq", xmlValue))
-            return(data.frame(id, hsp_num = nums, qseq, hseq))
-      }
-      df <- xpathApply(result, "//Hit", parse_single_hit)
-      df <- data.frame(do.call(rbind, df))
-      df <- data_frame_factor_to_char(df)     
-      res <- list()
-      print(df)
-      for (i in 1:nrow(df))
-      {
-            aln <- DNAMultipleAlignment(c(df$qseq[i], df$hseq[i]), 
-                                           rowmask = as(IRanges(), "NormalIRanges"), colmask = as(IRanges(), "NormalIRanges"))
-            res[i] <- aln
-      }
-      names(res) <- df$id
-      return(res)
-}
-
-
-
-      
+ 
       
 get_blast_result <-  function (x, database = "nr", hitListSize = "10", filter = "L", expect = "10", program = "blastn", equery = "",
                                attempts = 10) 
@@ -554,25 +528,3 @@ get_blast_result <-  function (x, database = "nr", hitListSize = "10", filter = 
       result <- .tryParseResult(url1, attempts)
       return(result)
 }
-
-get_reduced_constitutive_exons <- function(gene, hexevent)
-{
-      tab <- hexevent[hexevent$genename == gene,]
-      gr <- GRanges(seqnames = Rle(tab$chromo), ranges = IRanges(start = tab$start, end = tab$end), 
-                    strand = Rle(tab$strand), constitLevel = tab$constitLevel, count = tab$count)
-      red <- reduce(gr, with.mapping  = T)
-      mapping <- mcols(red)$mapping
-      #Do a weighted mean of constitLevel, where the weight is going to be given by count
-      avg <- sapply(mapping, function(x, gr)
-            {
-                  m <- mcols(gr[x])
-                  val <- sum(m$count * m$constitLevel) / sum(m$count) 
-                  return(val)
-            }, gr = gr)
-
-      mcols(red)$avg <- avg
-      return(red)
-}
-    
-#gr <- GRanges(seqnames = Rle(c("chr1", "chr2", "chr1", "chr3"), c(1, 3, 2, 4)), ranges = IRanges(1:10, end = 7:16, names = head(letters, 10)), strand = Rle(strand(c("-", "+", "*", "+", "-")), c(1, 2, 2, 3, 2)),
-#            score = 1:10, GC = seq(1, 0, length = 10))
