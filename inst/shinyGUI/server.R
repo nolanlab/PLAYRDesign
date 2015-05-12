@@ -170,7 +170,7 @@ shinyServer(function(input, output, session)
             {
                   isolate({
                         tab <- cur_primer3_data
-                        f_name <- paste(input$input_file, "playr_design_out.txt", sep = ".")
+                        f_name <- paste(input$input_file, "playrdesign_out.txt", sep = ".")
                         gene_name <- gsub(".fasta", "", input$input_file)
                         PLAYRDesign:::write_selected_oligos(tab, input$selected_oligos, input$PLAYR_system, file.path(working.dir, f_name), input$start_playr_id, gene_name)
                   })
