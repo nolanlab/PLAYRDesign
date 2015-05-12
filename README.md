@@ -1,16 +1,18 @@
 # PLAYRDesign
 
-## Install required R packages
+## Installation
+
+### Install required R packages
 
 You need to install the devtools package, available from CRAN, and a number of packages from Bioconductor. The rest of the dependencies for PLAYRDesign will be automatically installed
 
-#### Devtools
+### Devtools
 
 Open an R session, type the following command and select a CRAN mirror when prompted.
 
 `install.packages("devtools")`
 
-#### Bioconductor packages
+### Bioconductor packages
 
 Open an R session and type the following commands
 
@@ -19,7 +21,7 @@ source("http://bioconductor.org/biocLite.R")
 biocLite(c("AnnotationDbi", "AnnotationFuncs", "BSgenome", "BSgenome.Hsapiens.UCSC.hg19", 
 "Biostrings", "GenomicFeatures", "GenomicRanges", "IRanges", "org.Hs.eg.db"))
 ```
-## Install PLAYRDesign
+### Install PLAYRDesign
 
 Once you have succesfully completed the steps above, you have to create a Github token by following [these instructions.](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) (This won't be necessary anymore when the repository goes public).
 Copy the token, start an R session and type the following commands, substituing your Github token
@@ -35,7 +37,7 @@ However before you can use PLAYRDesign you will need to install two additional p
 
 
 
-## Installing Primer3
+### Installing Primer3
 
 Download the latest version of Primer3 from [here](http://primer3.sourceforge.net/releases.php) and follow the [installation instructions](http://primer3.sourceforge.net/primer3_manual.htm). At the end of the installation the **primer3_core** executable must be in your PATH. There are several ways to accomplish this. On OSX or Linux the easiest way is probably to copy or link the executable in the /usr/local/bin directory. Please note that on OSX GUI applications do not necessarily have the same PATH as the shell, so using other install locations might be cumbersome if you are running the default R GUI. Whichever approach you choose, at the end of the installation you need to be able to run the following command from within R without errors
 
@@ -43,7 +45,7 @@ Download the latest version of Primer3 from [here](http://primer3.sourceforge.ne
 system("primer3_core")
 ```
 
-## Installing BLAST+
+### Installing BLAST+
 
 The installation of BLAST+ could be the subject of an entire book. Only minimal instructions are given here for the purpose of setting up a barebones BLAST+ environment that will interact with PLAYRDesign. First download BLAST+ [here](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download). You will then need to specify the location where you want your BLAST+ sequence database to be stored. The setup procedure differs according to the platform you are using, please refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK1762/) for details. PLAYRDesign makes use of two sequence databases, which need to have these **exact** names:
 
@@ -89,4 +91,30 @@ library(PLAYRDesign)
 PLAYRDesign.run()
 ```
 to stop PLAYRDesign simply hit the "ESC" key in your R session.
+
+## Usage
+
+### Starting the analysis
+
+First download the sequence of the transcript for which you want to design probes in FASTA format and save it in a plain text file with a .fasta extension. We recommend choosing the longest isoform of the transcript because the software will show which exons can undergo alternative splicing. When you start the PLAYRDesign software you will be prompted to select a file: you can choose *any* file that is located in the directory which contains your transcript sequences.
+
+Your R window will then show the message 
+
+```
+"Loading EST data..."
+```
+
+this will take a couple of minutes, when the process is completed the PLAYRDesign controls will appear in your browser window. In the GUI use the "Select input file" dropdown to select the fasta file you want to design probes for. The boxes with the numeric values are for setting parameteres for the primer3 software. The defaults are the values used in the paper.
+Once you are ready it the "Start analysis" button. Several messages should appear in your R window as the software is running. Once the analysis is completed a number of plots will appear in the browser window
+
+### Selecting probes
+
+The candidate probes are displayed as red rectangles at the bottom of the interface. Each pair is identified by a unique number on the rectangle. If you click on a probe both oligos in a pair will be selected. Selected oligos appear in the "Select oligos" box, and can be removed from there if desired. It is also possible to generate a probe pair by selecting individual oligos from two different primer3 pairs. To do so ALT+Click on the first and then ALT+Click on the second (to clear the working selection ALT+Click on any blank region of the plot).
+
+Once you have selected the probe pairs use the "Select PLAYR system" dropdown to select an insert system and enter an id for the first oligo. Our standard is for the 5' oligo (on the transcript) of a pair to be the first one and to have an odd number. Hit the "Write oligos" button and a text file with the **.playrdesign_out.txt** extension will appear in your working directory (the same directory where your fasta files are located). The directory will also contain two **.blast_out.txt** files which contain the BLAST+ result and which are your free to delete after the analysis is completed.
+
+
+
+
+
 
