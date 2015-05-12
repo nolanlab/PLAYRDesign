@@ -480,38 +480,4 @@ data_frame_factor_to_char <- function(df)
 }
       
  
-      
-get_blast_result <-  function (x, database = "nr", hitListSize = "10", filter = "L", expect = "10", program = "blastn", equery = "",
-                               attempts = 10) 
-{
-      baseUrl <- "http://www.ncbi.nlm.nih.gov/blast/Blast.cgi"
-      query <- paste("QUERY=", as.character(x), "&DATABASE=", database, "&ENTREZ_QUERY=", equery,
-                     "&HITLIST_SIZE=", hitListSize, "&FILTER=", filter, "&EXPECT=", 
-                     expect, "&PROGRAM=", program, sep = "")
-      url0 <- sprintf("%s?%s&CMD=Put", baseUrl, query)
-      results <- tempfile()
-      Sys.sleep(5)
-      require(XML)
-      post <- htmlTreeParse(url0, useInternalNodes = TRUE)
-      x <- post[["string(//comment()[contains(., \"QBlastInfoBegin\")])"]]
-      rid <- sub(".*RID = ([[:alnum:]]+).*", "\\1", x)
-      rtoe <- as.integer(sub(".*RTOE = ([[:digit:]]+).*", "\\1", 
-                             x))
-      url1 <- sprintf("%s?RID=%s&FORMAT_TYPE=XML&CMD=Get", baseUrl, 
-                      rid)
-      Sys.sleep(rtoe)
-      .tryParseResult <- function(url, attempts)
-            {
-            for (i in 1:(attempts+1)) 
-            {
-                  result <- tryCatch({xmlTreeParse(url, useInternalNodes=TRUE,
-                                     error = xmlErrorCumulator(immediate=FALSE))}, error=function(err) NULL)
-                  if (!is.null(result)) return(result)
-                  Sys.sleep(10)
-            }
-            stop(paste("no results after ", attempts, 
-                       " attempts; please try again later", sep = ""))
-      }
-      result <- .tryParseResult(url1, attempts)
-      return(result)
-}
+

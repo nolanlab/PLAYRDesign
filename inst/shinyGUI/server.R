@@ -9,10 +9,11 @@ render_ui <- function(working.dir, ...){renderUI({
             fluidRow(
                   column(4,
                          fluidRow(
-                               selectInput("input_file", "Select input file", choices = c("", list.files(path = working.dir, pattern = "*.fasta$")))
+                               h1("PLAYRDesign"),
+                               selectInput("input_file", "Select input file", width = "100%", choices = c("", list.files(path = working.dir, pattern = "*.fasta$")))
                          ),
                          fluidRow(
-                               column(4,numericInput("tm_min", "Tm Min", 61, min = 0, max = 100)),
+                               column(4, numericInput("tm_min", "Tm Min", 61, min = 0, max = 100)),
                                column(4, numericInput("tm_opt", "Tm Opt", 63, min = 0, max = 100)),
                                column(4, numericInput("tm_max", "Tm Max", 65, min = 0, max = 100))
                          ),
@@ -36,7 +37,7 @@ render_ui <- function(working.dir, ...){renderUI({
                                actionButton("start_button", "Start analysis")
                          ),
                          fluidRow(
-                               selectInput("selected_oligos", "Select oligos", choices = c(""), multiple = T)
+                               selectInput("selected_oligos", "Currently selected oligos", choices = c(""), multiple = T)
                          ),
                          fluidRow(
                                selectInput("PLAYR_system", "Select PLAYR system", choices =  unique(read.table(system.file("PLAYR_Systems.txt", package = "PLAYRDesign"), header = T, stringsAsFactors = F)$Name))
@@ -46,11 +47,11 @@ render_ui <- function(working.dir, ...){renderUI({
                          ),
                          fluidRow(
                                actionButton("write_oligos", "Write oligos")
-                         ),
-                         fluidRow(
-                               h4("Currently selected oligo"),
-                               verbatimTextOutput("currently_selected_oligo")
                          )
+                         #fluidRow(
+                         #      h4("Currently selected oligo"),
+                         #      verbatimTextOutput("currently_selected_oligo")
+                         #)
                   ),
                   column(8,
                          singleton(tags$head(tags$script(src = "http://d3js.org/d3.v3.min.js"))),
