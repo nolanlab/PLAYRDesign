@@ -92,3 +92,21 @@ PLAYRDesign.run()
 ```
 to stop PLAYRDesign simply hit the "ESC" key in your R session.
 
+## Usage
+
+First download the sequence of the transcript for which you want to design probes in FASTA format and save it in a plain text file with a .fasta extension. We recommend choosing the longest isoform of the transcript because the software will show which exons can undergo alternative splicing. When you start the PLAYRDesign software you will be prompted to select a file: you can choose *any* file that is located in the directory which contains your transcript sequences.
+
+Your R window will then show the message 
+
+```
+"Loading EST data..."
+```
+
+this will take a couple of minutes, when the process is completed the PLAYRDesign controls will appear in your browser window. In the GUI use the "Select input file" dropdown to select the fasta file you want to design probes for. The boxes with the numeric values are for setting parameteres for the primer3 software. The defaults are the values used in the paper.
+Once you are ready it the "Start analysis" button. Several messages should appear in your R window as the software is running.
+
+
+
+
+
+
