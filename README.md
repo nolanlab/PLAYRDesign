@@ -94,6 +94,8 @@ to stop PLAYRDesign simply hit the "ESC" key in your R session.
 
 ## Usage
 
+### Starting the analysis
+
 First download the sequence of the transcript for which you want to design probes in FASTA format and save it in a plain text file with a .fasta extension. We recommend choosing the longest isoform of the transcript because the software will show which exons can undergo alternative splicing. When you start the PLAYRDesign software you will be prompted to select a file: you can choose *any* file that is located in the directory which contains your transcript sequences.
 
 Your R window will then show the message 
@@ -103,7 +105,13 @@ Your R window will then show the message
 ```
 
 this will take a couple of minutes, when the process is completed the PLAYRDesign controls will appear in your browser window. In the GUI use the "Select input file" dropdown to select the fasta file you want to design probes for. The boxes with the numeric values are for setting parameteres for the primer3 software. The defaults are the values used in the paper.
-Once you are ready it the "Start analysis" button. Several messages should appear in your R window as the software is running.
+Once you are ready it the "Start analysis" button. Several messages should appear in your R window as the software is running. Once the analysis is completed a number of plots will appear in the browser window
+
+### Selecting probes
+
+The candidate probes are displayed as red rectangles at the bottom of the interface. Each pair is identified by a unique number on the rectangle. If you click on a probe both oligos in a pair will be selected. Selected oligos appear in the "Select oligos" box, and can be removed from there if desired. It is also possible to generate a probe pair by selecting individual oligos from two different primer3 pairs. To do so ALT+Click on the first and then ALT+Click on the second (to clear the working selection ALT+Click on any blank region of the plot).
+
+Once you have selected the probe pairs use the "Select PLAYR system" dropdown to select an insert system and enter an id for the first oligo. Our standard is for the 5' oligo (on the transcript) of a pair to be the first one and to have an odd number.
 
 
 
