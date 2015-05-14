@@ -114,6 +114,17 @@ PLAYRDesign.convert_est_to_RData("PUT THE PATH TO THE INPUT FILE HERE")
 
 The command will take a while to run and will then generate a file called **spliced_est_hg19.RData** which you can then move to the PLAYRDesign installation folder (see above).
 
+#### Regenerating Exon information
+
+Type the following commands in R (in older version of Bioconductor the **makeTxDbFromUCSC** was called **makeTranscriptDbFromUCSC**, but it works the same)
+
+```
+library(GenomicFeatures)
+txdb <-  makeTxDbFromUCSC(genome = "hg19", tablename = "refGene")
+saveDb(txdb, "UCSC_Refseq_transcripts.sqlite")
+```
+
+This will create a file named **UCSC_Refseq_transcripts.sqlite** in your working directory, which you can then move in the PLAYRDesign installation directory.
 
 ## Usage
 
