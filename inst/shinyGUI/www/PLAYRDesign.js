@@ -153,38 +153,17 @@ function makeGrid(svg, w, h, posScale){
         .call(xAxis);
 }
 
-function convert_blast_res(data)
+function convert_data_for_plotting(data, x_name, y_name)
 {
-      var blast_res = [];
-      console.log(data.blast)
-      for (var i = 0; i < data.blast.pos.length; i++)
+      var res = [];
+      for (var i = 0; i < data[x_name].length; i++)
       {
-            blast_res.push({"pos": data.blast.pos[i], "blast1": data.blast.blast1[i], "blast2" : data.blast.blast2[i]});
+            res.push({"x": data[x_name][i], "y": data[y_name][i]});
       }
-      return(blast_res);
+      return(res);
 }
-
-
-function convert_est_res(data)
-{
-     var est_res = [];
-     for (var i = 0; i < data.est.pos.length; i++)
-     {
-           est_res.push({"pos": data.est.pos[i], "exon_skip": data.est.exon_skip[i]});
-     }
-     return(est_res);
       
-}
 
-function convert_seq_char(data)
-{
-      var seq_char = [];
-      for (var i = 0; i < data.seq_char.pos.length; i++)
-      {
-            seq_char.push({"pos": data.seq_char.pos[i], "gc": data.seq_char.gc[i], "tm": data.seq_char.tm[i]});
-      }
-      return(seq_char);
-}
 
 function convert_primer3_res(data)
 {
@@ -233,6 +212,57 @@ function add_overlay_rect(svg, height)
       return(svg);
 }
 
+function do_plot(data, x_scale, svg, height, width, margin, svg_id, graph_class)
+{
+      
+      
+      var y_scale = d3.scale.linear().range([height, 0]);
+      y_scale.domain(d3.extent(data, function(d) { return d.y; }));
+                  
+                  
+      var x_axis = d3.svg.axis().scale(x_scale).orient("bottom");
+      var y_axis = d3.svg.axis().scale(y_scale).orient("left");
+                  
+      var line = d3.svg.line()
+            .x(function(d) { return x_scale(d.x); })
+            .y(function(d) { return y_scale(d.y); });
+         
+         
+      svg = svg.attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .attr("id", svg_id)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            
+            svg.append("g")
+                  .attr("class", "x axis")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(x_axis);
+            svg.append("g")
+                  .attr("class", "y axis")
+                  .call(y_axis);
+
+       
+            svg.append("path")
+                  .datum(data)
+                  .attr("class", graph_class)
+                  .attr("d", line);
+                  
+                  
+            svg.append("g")
+                  .append("rect")
+                  .attr("class", "overlay_rect")
+                  .attr("rx", 3)
+                  .attr("ry", 3)
+                  .attr("height", height)
+                  .style("opacity", "0.1")
+                  .style("display", "none");
+            
+            
+            return(svg);
+}
+
 
 
 $.extend(graphOutputBinding, {
@@ -241,138 +271,47 @@ $.extend(graphOutputBinding, {
          },
          renderValue: function(el, data)
          {
-               console.log(data);
-               
-               var blast_res = convert_blast_res(data);
                var oligoArray = convert_primer3_res(data);
-               var seq_char = convert_seq_char(data);
-               var est_res = convert_est_res(data);
+               
+               var est_res = convert_data_for_plotting(data.est, "pos", "exon_skip");
+               var seq_char = convert_data_for_plotting(data.seq_char, "pos", "tm");
+               var blast_res1 = convert_data_for_plotting(data.blast, "pos", "blast1");
+               var blast_res2 = convert_data_for_plotting(data.blast, "pos", "blast2");
                
             
-            var margin = {top: 50, right: 50, bottom: 50, left: 50}, width = 1400 - margin.left - margin.right, height = 300 - margin.top - margin.bottom;
-            var posScale = d3.scale.linear()
-                  .range([0, width]);
-            var blast1_y = d3.scale.linear()
-                  .range([height, 0]);
-            var blast2_y = d3.scale.linear()
-                  .range([height, 0]);
-            var tm_y = d3.scale.linear()
-                  .range([height, 0]);
-            var est_y = d3.scale.linear()
-                  .range([height, 0]);
-                  
-           
-                  
-            var xAxis = d3.svg.axis()
-                  .scale(posScale)
-                  .orient("bottom");
-            var blast1_yAxis = d3.svg.axis()
-                  .scale(blast1_y)
-                  .orient("left");
-            var blast2_yAxis = d3.svg.axis()
-                  .scale(blast2_y)
-                  .orient("right");
-            var est_yAxis = d3.svg.axis()
-                  .scale(est_y)
-                  .orient("left");
-                  
-            var blast1_line = d3.svg.line()
-                  .x(function(d) { return posScale(d.pos); })
-                  .y(function(d) { return blast1_y(d.blast1); });
-            var blast2_line = d3.svg.line()
-                  .x(function(d) { return posScale(d.pos); })
-                  .y(function(d) { return blast2_y(d.blast2); });
-            var tm_line = d3.svg.line()
-                  .x(function(d) { return posScale(d.pos); })
-                  .y(function(d) { return tm_y(d.tm); });
-            var est_line = d3.svg.line()
-                  .x(function(d) { return posScale(d.pos); })
-                  .y(function(d) { return est_y(d.exon_skip); });
-                  
-                  
+            var margin = {top: 8, right: 50, bottom: 20, left: 50}, width = 1400 - margin.left - margin.right, height = 120 - margin.top - margin.bottom;
+            
+      var x_scale = d3.scale.linear().range([0, width]);
+      x_scale.domain(d3.extent(blast_res1, function(d) { return d.x; }));
+            
+            
                   
 
             //remove the old graph
             var svg = d3.select(el).select("svg");
-                  svg.remove();
+            svg.remove();
          
             $(el).html("");
          
-            //append a new one
             svg = d3.select(el).append("svg");
-            svg = svg.attr("width", width + margin.left + margin.right)
-                  .attr("height", height + margin.top + margin.bottom)
-                  .attr("id", "main_graph")
-                  .append("g")
-                  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            posScale.domain(d3.extent(blast_res, function(d) { return d.pos; }));
-            blast1_y.domain(d3.extent(blast_res, function(d) { return d.blast1; }));
-            blast2_y.domain(d3.extent(blast_res, function(d) { return d.blast2; }));
-            tm_y.domain(d3.extent(seq_char, function(d) { return d.tm; }));
+            do_plot(blast_res1, x_scale, svg, height, width, margin, "blast1", "line1");
+            svg = d3.select(el).append("svg")
+            do_plot(blast_res2, x_scale, svg, height, width, margin, "blast2", "line2");
+            svg = d3.select(el).append("svg")
+            do_plot(seq_char, x_scale, svg, height, width, margin, "seq_char", "line3");
+            svg = d3.select(el).append("svg")
+            do_plot(est_res, x_scale, svg, height, width, margin, "est_res", "line1");
             
-            svg.append("g")
-                  .attr("class", "x axis")
-                  .attr("transform", "translate(0," + height + ")")
-                  .call(xAxis);
-            svg.append("g")
-                  .attr("class", "y axis")
-                  .call(blast1_yAxis)
-            svg.append("g")
-                  .attr("class", "y axis")
-                  .attr("transform", "translate(" + width + " ,0)")  
-                  .call(blast2_yAxis)
-
-       
-            svg.append("path")
-                  .datum(blast_res)
-                  .attr("class", "line1")
-                  .attr("d", blast1_line);
             
-            svg.append("path")
-                  .datum(blast_res)
-                  .attr("class", "line2")
-                  .attr("d", blast2_line);
-                  
-            svg.append("path")
-                  .datum(seq_char)
-                  .attr("class", "line3")
-                  .attr("d", tm_line);
-            
-            svg = add_overlay_rect(svg, height);
-            var est_plot_svg = d3.select(el).append("svg");
-            
-            est_plot_svg = est_plot_svg.attr("width", width + margin.left + margin.right)
-                  .attr("height", height + margin.top + margin.bottom)
-                  .attr("id", "est_graph")
-                  .append("g")
-                  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            posScale.domain(d3.extent(est_res, function(d) { return d.pos; }));
-            est_y.domain(d3.extent(est_res, function(d) { return d.exon_skip; }));
-            
-            est_plot_svg.append("g")
-                  .attr("class", "x axis")
-                  .attr("transform", "translate(0," + height + ")")
-                  .call(xAxis);
-            est_plot_svg.append("g")
-                  .attr("class", "y axis")
-                  .call(est_yAxis);
-       
-            est_plot_svg.append("path")
-                  .datum(est_res)
-                  .attr("class", "line1")
-                  .attr("d", est_line);
-            est_plot_svg = add_overlay_rect(est_plot_svg, height);
+           
             var oligo_plot_svg = d3.select(el).append("svg");
-            height = height * 2;
+            height = height * 3;
             oligo_plot_svg = oligo_plot_svg.attr("width", width + margin.left + margin.right)
                   .attr("height", height + margin.top + margin.bottom)
                   .attr("id", "oligo_plot")
                   .append("g")
                   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-            make_oligo_plot(oligo_plot_svg, oligoArray, width, height, posScale);
-
+            make_oligo_plot(oligo_plot_svg, oligoArray, width, height, x_scale);
 
          }
 });

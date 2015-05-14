@@ -64,21 +64,7 @@ render_ui <- function(working.dir, ...){renderUI({
 })}
 
 
-get_data_for_graph <- function(f_name, to_report, len, tm, gc, product_size)
-{
-      print(f_name)
-      blast_refseq <- PLAYRDesign:::run_blast_analysis_for_seq(f_name, db = "rna_human_high_qual.fa", filter_same_gi = TRUE)
-      blast_repbase <- PLAYRDesign:::run_blast_analysis_for_seq(f_name, db = "repbase.fa", filter_same_gi = FALSE)
-      blast <- data.frame(pos = blast_repbase$pos, blast1 = blast_refseq$percIdentity, blast2 = blast_repbase$percIdentity)
-      primer3 <- PLAYRDesign:::run_primer3(f_name, 
-                        n = to_report, len = len, tm = tm, gc = gc, product_size = product_size)
-      seq_char <- PLAYRDesign:::get_sequence_characteristics(f_name)
 
-      return(list(blast = blast, primer3 = primer3$tab_primers, seq_char = seq_char))
-      
-      
-      #return(list(pos = df$pos, eVal = df$eVal, bitScore = df$bitScore, percIdentity = df$percIdentity))
-}
 
 
 do_est_analysis <- function(f_name, gr.est)
@@ -117,6 +103,7 @@ shinyServer(function(input, output, session)
                   blast <- data.frame(pos = blast_repbase$pos, blast1 = blast_refseq$percIdentity, blast2 = blast_repbase$percIdentity)
                   seq_char <- PLAYRDesign:::get_sequence_characteristics(f_name)
                   est <- do_est_analysis(f_name, gr.est)
+                  
                   return(list(blast = blast, seq_char = seq_char, est = est))
             }
             else
