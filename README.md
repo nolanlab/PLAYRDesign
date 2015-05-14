@@ -54,7 +54,7 @@ rna_human_high_qual.fa: this is a database of reference human RNA sequences
 ```
 The repetitive sequences can be downloaded from [Repbase](http://www.girinst.org/repbase/). Download the *humrep.ref* and *simple.ref* in FASTA format and concatenate them to generate the *repbase.fa* file.
 
-The Human RefSeq RNA sequences can be downloaded by visiting the [NCBI ftp server]( ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/RNA/) and selecting the *rna.fa.gz* file. We reccomend filtering this file to only contain *NR* and *NM* records. You can do so by using the *filter_refseq_file* function included in the PLAYRDesign R package (unpack the *rna.fa.gz* file first).
+The Human RefSeq RNA sequences can be downloaded by visiting the NCBI ftp server (ftp://ftp.ncbi.nlm.nih.gov/), navigating to the **refseq -> H_sapiens -> H_sapiens -> RNA** folder and selecting the *rna.fa.gz* file. We reccomend filtering this file to only contain *NR* and *NM* records. You can do so by using the *filter_refseq_file* function included in the PLAYRDesign R package (unpack the *rna.fa.gz* file first).
 
 ```
 library(PLAYRDesign)
