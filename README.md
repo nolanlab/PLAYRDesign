@@ -69,7 +69,7 @@ makeblastdb -in rna_human_high_qual.fa
 
 ```
 
-If everythin was successfult you should be able to type the following commands in an R session
+If everything was successful you should be able to type the following commands in an R session
 
 ```
 system("blastn -db repbase.fa")
@@ -90,6 +90,30 @@ library(PLAYRDesign)
 PLAYRDesign.run()
 ```
 to stop PLAYRDesign simply hit the "ESC" key in your R session.
+
+### Regenerating EST and exon information
+
+PLAYRDesign depends on two pieces of data to determine the exon structure of a gene and it overlap with ESTs. The data files are provided in the **inst/** subdirectory of the package and are named **spliced_est_hg19.RData** and **UCSC_Refseq_transcripts.sqlite**. When you install the R package these files are automatically copied in the installation directory. This section explains how to regenerate these data files from scratch, in case you wanted to upgrade EST or exon definitions. After you have generated new versions of these files you will have to move them in their installation directory. To determine the location of the installation directory in your machine, type the following command in an R session
+
+```
+system.file("spliced_est_hg19.RData", package = "PLAYRDesign")
+```
+
+#### Regenerating EST information
+
+Access the UCSC Table Browser [here](https://genome.ucsc.edu/cgi-bin/hgTables) and select the **intronEst** table from the **Spliced ESTs** track in the **mRNA and EST** group. To shorten the download and processing times, after you press the *get output* button, you can select only the following fields, which are used by PLAYRDesign.
+
+```
+strand, tName, tStart, tEnd, blockSizes, tStarts
+```
+Save the file on your computer and use the following function from the PLAYRDesign R package to convert the txt file into the format that will be used by PLAYRDesign
+
+```
+PLAYRDesign.convert_est_to_RData("PUT THE PATH TO THE INPUT FILE HERE")
+```
+
+The command will take a while to run and will then generate a file called **spliced_est_hg19.RData** which you can then move to the PLAYRDesign installation folder (see above).
+
 
 ## Usage
 
