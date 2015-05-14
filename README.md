@@ -65,7 +65,7 @@ At this point you should have two sequence files in FASTA format, called *repbas
 
 ```
 makeblastdb -in repbase.fa -parse_seqids -dbtype nucl
-makeblastdb -in rna_human_high_qual.fa
+makeblastdb -in rna_human_high_qual.fa -parse_seqids -dbtype nucl
 
 ```
 
