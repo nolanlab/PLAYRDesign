@@ -61,7 +61,7 @@ library(PLAYRDesign)
 PLAYRDesign.filter_refseq_file("PUT PATH TO INPUT FILE HERE", "PATH TO OUTPUT FILE HERE")
 ```
 
-At this point you should have two sequence files in FASTA format, called *repbase.fa* and *rna_human_high_qual.fa*. Move both files to the BLAST+ database directory and convert them to BLAST+ databases by typing these commands. (Refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK279688/) for additional details on how to use *makeblastdb*)
+At this point you should have two sequence files in FASTA format, called *repbase.fa* and *rna_human_high_qual.fa*. Move both files to the BLAST+ database directory and convert them to BLAST+ databases by typing these commands (the *makeblastdb* program must be in your PATH, see above). Refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK279688/) for additional details on how to use *makeblastdb*.
 
 ```
 makeblastdb -in repbase.fa -parse_seqids -dbtype nucl
@@ -93,7 +93,7 @@ to stop PLAYRDesign simply hit the "ESC" key in your R session.
 
 ### Regenerating EST and exon information
 
-PLAYRDesign depends on two pieces of data to determine the exon structure of a gene and it overlap with ESTs. The data files are provided in the **inst/** subdirectory of the package and are named **spliced_est_hg19.RData** and **UCSC_Refseq_transcripts.sqlite**. When you install the R package these files are automatically copied in the installation directory. This section explains how to regenerate these data files from scratch, in case you wanted to upgrade EST or exon definitions. After you have generated new versions of these files you will have to move them in their installation directory. To determine the location of the installation directory in your machine, type the following command in an R session
+PLAYRDesign depends on two pieces of data to determine the exon structure of a gene and its overlap with ESTs. The data files are provided in the **inst/** subdirectory of the package and are named **spliced_est_hg19.RData** and **UCSC_Refseq_transcripts.sqlite**. When you install the R package these files are automatically copied in the installation directory. This section explains how to regenerate these data files from scratch, in case you wanted to upgrade EST or exon definitions. After you have generated new versions of these files you will have to move them in their installation directory. To determine the location of the installation directory on your machine, type the following command in an R session
 
 ```
 system.file("spliced_est_hg19.RData", package = "PLAYRDesign")
@@ -112,7 +112,7 @@ Save the file on your computer and use the following function from the PLAYRDesi
 PLAYRDesign.convert_est_to_RData("PUT THE PATH TO THE INPUT FILE HERE")
 ```
 
-The command will take a while to run and will then generate a file called **spliced_est_hg19.RData** which you can then move to the PLAYRDesign installation folder (see above).
+The command will take a while to run and will  generate a file called **spliced_est_hg19.RData** which you can then move to the PLAYRDesign installation folder (see above).
 
 #### Regenerating Exon information
 
@@ -130,7 +130,7 @@ This will create a file named **UCSC_Refseq_transcripts.sqlite** in your working
 
 ### Starting the analysis
 
-First download the sequence of the transcript for which you want to design probes in FASTA format and save it in a plain text file with a .fasta extension. We recommend choosing the longest isoform of the transcript because the software will show which exons can undergo alternative splicing. When you start the PLAYRDesign software you will be prompted to select a file: you can choose *any* file that is located in the directory which contains your transcript sequences.
+First download the sequence of the transcript for which you want to design probes in FASTA format and save it in a plain text file with a .fasta extension. We recommend choosing the longest isoform of the transcript because the software will show which exons can undergo alternative splicing. When you start the PLAYRDesign software you will be prompted to select a file: you can choose *any* .fasta file that is located in the directory which contains your transcript sequences.
 
 Your R window will then show the message 
 
@@ -138,12 +138,12 @@ Your R window will then show the message
 "Loading EST data..."
 ```
 
-this will take a couple of minutes, when the process is completed the PLAYRDesign controls will appear in your browser window. In the GUI use the "Select input file" dropdown to select the fasta file you want to design probes for. The boxes with the numeric values are for setting parameteres for the primer3 software. The defaults are the values used in the paper.
-Once you are ready it the "Start analysis" button. Several messages should appear in your R window as the software is running. Once the analysis is completed a number of plots will appear in the browser window
+this will take a couple of minutes. When the process is completed the PLAYRDesign controls will appear in your browser window. In the GUI use the "Select input file" dropdown to select the fasta file you want to design probes for. The boxes with the numeric values are for setting parameteres for the primer3 software. The defaults are the values used in the paper.
+Once you are ready hit the "Start analysis" button. Several messages should appear in your R window as the software is running. Once the analysis is completed a number of plots will appear in the browser window
 
 ### Selecting probes
 
-The candidate probes are displayed as red rectangles at the bottom of the interface. Each pair is identified by a unique number on the rectangle. If you click on a probe both oligos in a pair will be selected. Selected oligos appear in the "Select oligos" box, and can be removed from there if desired. It is also possible to generate a probe pair by selecting individual oligos from two different primer3 pairs. To do so ALT+Click on the first and then ALT+Click on the second (to clear the working selection ALT+Click on any blank region of the plot).
+The candidate probes are displayed as red rectangles at the bottom of the interface. Each pair is identified by a unique number on the rectangle. If you click on a probe both oligos in a pair will be selected. Selected oligos appear in the "Select oligos" box, and can be removed from there if desired. It is also possible to generate a probe pair by selecting individual oligos from two different primer3 pairs. To do so ALT+Click on the first and then ALT+Click on the second (to clear the working selection ALT+Click on any blank region of the plot). When you combine oligos from two different pairs, the "Select oligos" box will display their unique ids (which are different from the ids you see in the plot, and can be visualized by hovering over an oligo) separated by a *_* character.
 
 Once you have selected the probe pairs use the "Select PLAYR system" dropdown to select an insert system and enter an id for the first oligo. Our standard is for the 5' oligo (on the transcript) of a pair to be the first one and to have an odd number. Hit the "Write oligos" button and a text file with the **.playrdesign_out.txt** extension will appear in your working directory (the same directory where your fasta files are located). The directory will also contain two **.blast_out.txt** files which contain the BLAST+ result and which are your free to delete after the analysis is completed.
 
