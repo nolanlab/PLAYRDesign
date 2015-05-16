@@ -136,6 +136,7 @@ PLAYRDesign parses the FASTA descritpion line to extract the accession number of
 - eliminate BLAST matches to the same transcript
 - eliminate BLAST matches to different isoforms of the same transcript
 - retrieve the exon structure of the gene
+
 The FASTA line has to use the standard NCBI format which looks similar to this
 
 ```
