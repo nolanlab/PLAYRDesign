@@ -130,7 +130,21 @@ This will create a file named **UCSC_Refseq_transcripts.sqlite** in your working
 
 ### Starting the analysis
 
-First download the sequence of the transcript for which you want to design probes in FASTA format and save it in a plain text file with a .fasta extension. We recommend choosing the longest isoform of the transcript because the software will show which exons can undergo alternative splicing. When you start the PLAYRDesign software you will be prompted to select a file: you can choose *any* .fasta file that is located in the directory which contains your transcript sequences.
+First download the sequence of the transcript for which you want to design probes in FASTA format and save it in a plain text file with a .fasta extension. Because of the various databases that PLAYRDesign uses during the analysis, at present the software only works with human sequences. Support for additional species may be added in the future.
+
+PLAYRDesign parses the FASTA descritpion line to extract the accession number of the transcript. The accession is used to:
+- eliminate BLAST matches to the same transcript
+- eliminate BLAST matches to different isoforms of the same transcript
+- retrieve the exon structure of the gene
+The FASTA line has to use the standard NCBI format which looks similar to this
+
+```
+>gi|61676094|ref|NM_006137.6|
+```
+
+in practice the best option is to download RefSeq transcripts from the NCBI [nucleotide](http://www.ncbi.nlm.nih.gov/nuccore/) database, preferably choosing *NR* and *NM* records.
+
+We recommend choosing the longest isoform of the transcript because the software will show which exons can undergo alternative splicing. When you start the PLAYRDesign software you will be prompted to select a file: you can choose *any* .fasta file that is located in the directory which contains your transcript sequences.
 
 Your R window will then show the message 
 
