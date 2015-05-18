@@ -44,6 +44,13 @@ Download the latest version of Primer3 from [here](http://primer3.sourceforge.ne
 system("primer3_core")
 ```
 
+Primer3 also requires a directory that contains thermodynamic parameters for primer design. When you download the primer3 package these files are located in the *primer3_config* subfolder. This directory has to reside in one of the following locations:
+
+- the */opt* folder (OSX and Linux)
+- the working directory from which the **primer3_core** executable is run (OSX, Linux, Windows)
+
+If you choose the first option, simply copy the entire *primer3_config* folder in */opt*. If you go with the second option, the *primer3_config* directory needs to be located in your PLAYRDesign **working directory** (see Below *Usage*).
+
 ### Installing BLAST+
 
 The installation of BLAST+ could be the subject of an entire book. Only minimal instructions are given here for the purpose of setting up a barebones BLAST+ environment that will interact with PLAYRDesign. First download BLAST+ [here](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download) and make sure that the *blastn* and *makeblastdb* executables are in your PATH (see the above considerations for primer3 regarding the best way to do this). You will then need to specify the location where you want your BLAST+ sequence database to be stored. The setup procedure differs according to the platform you are using, please refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK1762/) for details. PLAYRDesign makes use of two sequence databases, which need to have these **exact** names:
@@ -143,9 +150,9 @@ The FASTA line has to use the standard NCBI format which looks similar to this
 >gi|61676094|ref|NM_006137.6|
 ```
 
-in practice the best option is to download RefSeq transcripts from the NCBI [nucleotide](http://www.ncbi.nlm.nih.gov/nuccore/) database, preferably choosing *NR* and *NM* records.
+in practice the best option is to download RefSeq transcripts from the NCBI [nucleotide](http://www.ncbi.nlm.nih.gov/nuccore/) database, preferably choosing *NR* and *NM* records. We recommend choosing the longest isoform of the transcript because the software will show which exons can undergo alternative splicing. 
 
-We recommend choosing the longest isoform of the transcript because the software will show which exons can undergo alternative splicing. When you start the PLAYRDesign software you will be prompted to select a file: you can choose *any* .fasta file that is located in the directory which contains your transcript sequences.
+When you start the PLAYRDesign software you will be prompted to select a file: you can choose *any* .fasta file that is located in the directory which contains your transcript sequences. This directory will be your **working directory**.
 
 Your R window will then show the message 
 
