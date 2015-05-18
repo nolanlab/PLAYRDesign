@@ -53,7 +53,12 @@ If you choose the first option, simply copy the entire *primer3_config* folder i
 
 ### Installing BLAST+
 
-The installation of BLAST+ could be the subject of an entire book. Only minimal instructions are given here for the purpose of setting up a barebones BLAST+ environment that will interact with PLAYRDesign. First download BLAST+ [here](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download) and make sure that the *blastn* and *makeblastdb* executables are in your PATH (see the above considerations for primer3 regarding the best way to do this). You will then need to specify the location where you want your BLAST+ sequence database to be stored. The setup procedure differs according to the platform you are using, please refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK1762/) for details. PLAYRDesign makes use of two sequence databases, which need to have these **exact** names:
+The installation of BLAST+ could be the subject of an entire book. Only minimal instructions are given here for the purpose of setting up a barebones BLAST+ environment that will interact with PLAYRDesign. First download BLAST+ [here](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download) and make sure that the *blastn* and *makeblastdb* executables are in your PATH (see the above considerations for primer3 regarding the best way to do this). You will then need to specify the location where you want your BLAST+ sequence database to be stored. The setup procedure differs according to the platform you are using, please refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK1762/) for details. 
+
+*Side note for OSX users: in order to specify the BLAST database directory you have to set the BLASTDB environment variable. Unfortunately on OSX graphical applications do not have the same environment variables as the shell. The procedure for setting up environment variables for GUI applications is rather complicated, and differs according to the specific version of OSX you are using (You will have to look up instructions on Google). A workaround for this problem is to have the BLAST sequence database files be in the same directory that you use as PLAYRDesign working directory (see below Usage).*
+
+
+PLAYRDesign makes use of two sequence databases, which need to have these **exact** names:
 
 ```
 repbase.fa: this is a database of repetitive sequences
