@@ -17,6 +17,20 @@ PLAYRDesign.filter_refseq_file <- function(in_name, out_name)
       writeXStringSet(db, file = out_name, format = "fasta", width = 80)
 }
 
+#' @export
+PLAYRDesign.convert_est_to_RData <- function(in_name, out_name = "spliced_est_hg19.RData")
+{
+      tab <- read.table(in_name, header = T, sep = "\t", comment.char = "", stringsAsFactors = F)
+      names(tab) <- gsub("X\\.", "", names(tab))
+      ret <- GRanges(seqnames = Rle(tab$tName), ranges = IRanges(start = tab$tStart, end = tab$tEnd), 
+                     strand = Rle(tab$strand))
+      
+      mcols(ret) <- tab[, c("blockSizes", "tStarts")]
+      names(ret) <- tab$qName
+      saveRDS(ret, out_name)
+}
+
+
 my_load <- function(f_name)
 {
       con <- file(f_name, "rb")
@@ -27,21 +41,6 @@ my_load <- function(f_name)
 
 
 
-load_est <- function(f_name)
-{
-      tab <- my_load(f_name)
-      
-      ret <- GRanges(seqnames = Rle(tab$tName), ranges = IRanges(start = tab$tStart, end = tab$tEnd), 
-                    strand = Rle(tab$strand))
-      
-      mcols(ret) <- tab[, c("blockSizes", "tStarts")]
-      names(ret) <- tab$qName
-      return(ret)
-      
-      
-      
-      
-}
 
 
 
@@ -253,9 +252,12 @@ run_primer3 <- function(f_name, n, len, tm, gc, product_size)
       
       template <- list.files(path = file.path(system.file(package = "PLAYRDesign")), pattern = "primer3_settings_template.txt", full.names = T)
       template <- readLines(template)
-      cat(s, template, file = "PLAYRDesign_primer3_input.txt", sep = "\n")      
-      system("primer3_core -output=PLAYRDesign_primer3_output.txt PLAYRDesign_primer3_input.txt")
-      return(parse_primer3_output("PLAYRDesign_primer3_output.txt"))
+      primer3_input_fname <- paste(f_name, "PLAYRDesign_primer3_input.txt", sep = ".")
+      primer3_output_fname <- paste(f_name, "PLAYRDesign_primer3_output.txt", sep = ".")
+      cat(s, template, file = primer3_input_fname, sep = "\n")      
+      system(sprintf("primer3_core -output=%s %s", primer3_output_fname, primer3_input_fname))
+      
+      return(parse_primer3_output(primer3_output_fname))
 }
 
 

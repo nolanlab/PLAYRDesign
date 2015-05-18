@@ -111,37 +111,25 @@ shinyServer(function(input, output, session)
       })      
       
       primer3_data <- reactive({
-            if(!is.null(input$start_button) && input$start_button != 0)
-                  isolate({
-                        len <- c(input$len_min, input$len_opt, input$len_max)
-                        tm <- c(input$tm_min, input$tm_opt, input$tm_max)
-                        gc <- c(input$gc_min, input$gc_max)
-                        product_size <- c(input$product_min, input$product_max)
-                        f_name <- paste(working.dir, input$input_file, sep = .Platform$file.sep)
-                        primer3 <- PLAYRDesign:::run_primer3(f_name, 
-                                                           n = input$oligos_to_report, len = len, tm = tm, gc = gc, product_size = product_size)
-                        return(primer3$tab_primers)
-                  })
+                  len <- c(input$len_min, input$len_opt, input$len_max)
+                  tm <- c(input$tm_min, input$tm_opt, input$tm_max)
+                  gc <- c(input$gc_min, input$gc_max)
+                  product_size <- c(input$product_min, input$product_max)
+                  f_name <- paste(working.dir, input$input_file, sep = .Platform$file.sep)
+                  primer3 <- PLAYRDesign:::run_primer3(f_name, 
+                                                     n = input$oligos_to_report, len = len, tm = tm, gc = gc, product_size = product_size)
+                  return(primer3$tab_primers)
       })
       
       output$main_graph <- reactive({
-            temp <- primer3_data()
-            print(temp)
-            if(!is.null(temp))
+            if(!is.null(input$start_button) && input$start_button != 0)
             {
+                  primer3 <- primer3_data()
+                  print(primer3)
+                  cur_primer3_data <<- primer3
                   seq.data <- seq_data()
-                  if(!is.null(cur_primer3_data))
-                  {
-                        a <- max(cur_primer3_data$pair_row_id)
-                        temp$pair_row_id <- temp$pair_row_id + a + 1
-                        a <- max(cur_primer3_data$id)
-                        temp$id <- temp$id + a + 1
-                        a <- max(cur_primer3_data$unique_id)
-                        temp$unique_id <- temp$unique_id + a + 1
-                        temp <- rbind(cur_primer3_data, temp)
-                  }
-                  ret <- c(seq.data, list(primer3 = temp))
-                  cur_primer3_data <<- temp
+                  ret <- c(seq.data, list(primer3 = primer3))
+                  updateSelectInput(session, "selected_oligos", selected = "", choices = "")
                   return(ret)
             }
       })

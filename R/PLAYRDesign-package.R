@@ -14,7 +14,6 @@
 #' @import IRanges
 #' @import BSgenome.Hsapiens.UCSC.hg19
 #' @import org.Hs.eg.db
-#' @import XML
 #' @import Biostrings
 
 NULL
