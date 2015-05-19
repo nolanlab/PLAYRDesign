@@ -38,35 +38,17 @@ However before you can use PLAYRDesign you will need to install two additional p
 
 ### Installing Primer3
 
-Download the latest version of Primer3 from [here](http://primer3.sourceforge.net/releases.php) and follow the [installation instructions](http://primer3.sourceforge.net/primer3_manual.htm). At the end of the installation the **primer3_core** executable must be in your PATH. There are several ways to accomplish this. On OSX or Linux the easiest way is probably to copy or link the executable in the /usr/local/bin directory. Please note that on OSX GUI applications do not necessarily have the same PATH as the shell, so using other install locations might be cumbersome if you are running the default R GUI. Whichever approach you choose, at the end of the installation you need to be able to run the following command from within R without errors
+Download the latest version of Primer3 from [here](http://primer3.sourceforge.net/releases.php), follow the [installation instructions](http://primer3.sourceforge.net/primer3_manual.htm) and copy the **primer3_core** executable in a location of your choice (you will need to specify the location later, see *Configuring PLAYRDesign*).
 
-```
-system("primer3_core")
-```
-
-Primer3 also requires a directory that contains thermodynamic parameters for primer design. When you download the primer3 package these files are located in the *primer3_config* subfolder. This directory has to reside in one of the following locations:
-
-- the */opt* folder (OSX and Linux)
-- the working directory from which the **primer3_core** executable is run (OSX, Linux, Windows)
-
-If you choose the first option, simply copy the entire *primer3_config* folder in */opt*. If you go with the second option, the *primer3_config* directory needs to be located in the current working directory of your R session (the current R working directory can be modified using the R GUI).
+Primer3 also requires a directory that contains thermodynamic parameters for primer design. When you download the primer3 package these files are located in the *primer3_config* subfolder. Copy the entire folder to a location of your choice.
 
 ### Installing BLAST+
 
-The installation of BLAST+ could be the subject of an entire book. Only minimal instructions are given here for the purpose of setting up a barebones BLAST+ environment that will interact with PLAYRDesign. First download BLAST+ [here](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download) and make sure that the *blastn* and *makeblastdb* executables are in your PATH (see the above considerations for primer3 regarding the best way to do this). You will then need to specify the location where you want your BLAST+ sequence database to be stored. The setup procedure differs according to the platform you are using, please refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK1762/) for details. 
+The installation of BLAST+ could be the subject of an entire book. Only minimal instructions are given here for the purpose of setting up a barebones BLAST+ environment that will interact with PLAYRDesign. First download BLAST+ [here](http://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download) and copy the *blastn* executable to a location of your choice. You will also have to select a directory where you want your BLAST+ sequence database to be stored (see below, *Configuring PLAYRDesign*). 
 
-*Side note for OSX users: in order to specify the BLAST database directory you have to set the BLASTDB environment variable. Unfortunately on OSX graphical applications do not have the same environment variables as the shell. The procedure for setting up environment variables for GUI applications is rather complicated, and differs according to the specific version of OSX you are using (You will have to look up instructions on Google). A workaround for this problem is to have the BLAST sequence database files be in the same directory that you use as PLAYRDesign working directory (see below Usage) AND also set this same directory as your R working directory before starting the analysis (Using the R GUI menu Misc -> Change Working Directory).*
+PLAYRDesign makes use of two sequence databases, one contains repetitive sequences for the organism of interest, the other is a database of all the transcript in the organism of interest. These database are used to avoid as much as possible the selection of probes that either match repetive sequences, or transcripts for different genes. (All FASTA sequence database files have to be saved with the *.fa* extension).
 
-
-PLAYRDesign makes use of two sequence databases, which need to have these **exact** names:
-
-```
-repbase.fa: this is a database of repetitive sequences
-rna_human_high_qual.fa: this is a database of reference human RNA sequences
-```
-The repetitive sequences can be downloaded from [Repbase](http://www.girinst.org/repbase/). Download the *humrep.ref* and *simple.ref* in FASTA format and concatenate them to generate the *repbase.fa* file.
-
-The Human RefSeq RNA sequences can be downloaded by visiting the NCBI ftp server (ftp://ftp.ncbi.nlm.nih.gov/), navigating to the **refseq -> H_sapiens -> H_sapiens -> RNA** folder and selecting the *rna.fa.gz* file. We reccomend filtering this file to only contain *NR* and *NM* records. You can do so by using the *filter_refseq_file* function included in the PLAYRDesign R package (unpack the *rna.fa.gz* file first).
+Instructions are given here for designing probes for human transcripts. The repetitive sequences can be downloaded from [Repbase](http://www.girinst.org/repbase/). Download the *humrep.ref* and *simple.ref* in FASTA format and concatenate them to generate the *repbase.fa* file. The Human RefSeq RNA sequences can be downloaded by visiting the NCBI ftp server (ftp://ftp.ncbi.nlm.nih.gov/), navigating to the **refseq -> H_sapiens -> H_sapiens -> RNA** folder and selecting the *rna.fa.gz* file. We reccomend filtering this file to only contain *NR* and *NM* records. You can do so by using the *filter_refseq_file* function included in the PLAYRDesign R package (unpack the *rna.fa.gz* file first).
 
 ```
 library(PLAYRDesign)
