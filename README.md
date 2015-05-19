@@ -49,7 +49,7 @@ Primer3 also requires a directory that contains thermodynamic parameters for pri
 - the */opt* folder (OSX and Linux)
 - the working directory from which the **primer3_core** executable is run (OSX, Linux, Windows)
 
-If you choose the first option, simply copy the entire *primer3_config* folder in */opt*. If you go with the second option, the *primer3_config* directory needs to be located in your PLAYRDesign **working directory** (see Below *Usage*).
+If you choose the first option, simply copy the entire *primer3_config* folder in */opt*. If you go with the second option, the *primer3_config* directory needs to be located in the current working directory of your R session (the current R working directory can be modified using the R GUI).
 
 ### Installing BLAST+
 
