@@ -10,6 +10,10 @@ render_ui <- function(working.dir, ...){renderUI({
                   column(4,
                          fluidRow(
                                h1("PLAYRDesign"),
+                               selectInput("est_file", "Select EST file", width = "100%", choices = ""),
+                               selectInput("txdb_file", "Select Transcript database file", width = "100%", choices = ""),
+                               selectInput("rep_db", "Select database of repetitive sequence", width = "100%", choices = ""),
+                               selectInput("rna_db", "Select target transcript database", width = "100%", choices = ""),
                                selectInput("input_file", "Select input file", width = "100%", choices = c("", list.files(path = working.dir, pattern = "*.fasta$")))
                          ),
                          fluidRow(
@@ -54,7 +58,7 @@ render_ui <- function(working.dir, ...){renderUI({
                          #)
                   ),
                   column(8,
-                         singleton(tags$head(tags$script(src = "http://d3js.org/d3.v3.min.js"))),
+                         singleton(tags$head(tags$script(src = "d3.min.js"))),
                          singleton(tags$head(tags$script(src = "PLAYRDesign.js"))),
                          singleton(tags$head(tags$link(rel = 'stylesheet', type = 'text/css', href = 'PLAYRDesign.css'))),
                          reactiveGraph(outputId = "main_graph")
@@ -64,14 +68,20 @@ render_ui <- function(working.dir, ...){renderUI({
 })}
 
 
+read_options_file <- function(f_name)
+{
+      tab <- read.table(f_name, header = F, sep = "=", stringsAsFactors = F)
+      ret <- as.list(tab$V2)
+      names(ret) <- tab$V1
+      return(ret)
+}
 
 
-
-do_est_analysis <- function(f_name, gr.est)
+do_est_analysis <- function(f_name, gr.est, txdb_file)
 {
       
       id <- PLAYRDesign:::get_refseq_id_from_fasta(f_name)
-      gr <- PLAYRDesign:::get_exons_for_transcript(id)
+      gr <- PLAYRDesign:::get_exons_for_transcript(id, txdb_file)
       v <- PLAYRDesign:::get_exons_skips(gr, gr.est)
       orig.seq <- PLAYRDesign:::get_seq_from_file(f_name)
       genomic.seq <- PLAYRDesign:::get_seq_from_ranges(gr)
@@ -86,23 +96,42 @@ shinyServer(function(input, output, session)
 {
       working.dir <- dirname(file.choose())
       output$PLAYRDesignUI <- render_ui(working.dir, input, output, session)
+      playrdesign_opt <- read_options_file(file.path(working.dir, "playrdesign_conf.txt"))
+
+      updateSelectInput(session, 
+            "est_file", choices = c("", list.files(playrdesign_opt$PLAYRDESIGN_DATA, pattern = ".RData$")))
+      updateSelectInput(session,
+            "txdb_file", choices = c("", list.files(playrdesign_opt$PLAYRDESIGN_DATA, pattern = ".sqlite$")))
+      updateSelectInput(session,
+            "rep_db", choices = c("", list.files(playrdesign_opt$BLASTN_DB, pattern = ".fa$")))
+      updateSelectInput(session,
+            "rna_db", choices = c("", list.files(playrdesign_opt$BLASTN_DB, pattern = ".fa$")))
       
-      print("Loading EST data...")
-      gr.est <- readRDS(system.file("spliced_est_hg19.RData", package = "PLAYRDesign"))
-      print("Done")
       
       cur_primer3_data <- NULL
+      
+      gr.est <- reactive({
+            gr.est <- NULL
+            if(!is.null(input$est_file) && input$est_file != "")
+            {
+                  print("Loading EST data...")
+                  gr.est <- readRDS(file.path(playrdesign_opt$PLAYRDESIGN_DATA, input$est_file))
+                  print("Done")
+            }
+            return(gr.est)
+      })
+      
       
       seq_data <- reactive({
             if(!is.null(input$input_file) && input$input_file != "")
             {
                   f_name <- paste(working.dir, input$input_file, sep = .Platform$file.sep)
                   print(sprintf("Running sequence analysis for %s", f_name))
-                  blast_refseq <- PLAYRDesign:::run_blast_analysis_for_seq(f_name, db = "rna_human_high_qual.fa", filter_same_gi = TRUE)
-                  blast_repbase <- PLAYRDesign:::run_blast_analysis_for_seq(f_name, db = "repbase.fa", filter_same_gi = FALSE)
+                  blast_refseq <- PLAYRDesign:::run_blast_analysis_for_seq(f_name, db = input$rna_db, filter_same_gi = TRUE, playrdesign_opt)
+                  blast_repbase <- PLAYRDesign:::run_blast_analysis_for_seq(f_name, db = input$rep_db, filter_same_gi = FALSE, playrdesign_opt)
                   blast <- data.frame(pos = blast_repbase$pos, blast1 = blast_refseq$percIdentity, blast2 = blast_repbase$percIdentity)
                   seq_char <- PLAYRDesign:::get_sequence_characteristics(f_name)
-                  est <- do_est_analysis(f_name, gr.est)
+                  est <- do_est_analysis(f_name, gr.est(), file.path(playrdesign_opt$PLAYRDESIGN_DATA, input$txdb_file))
                   
                   return(list(blast = blast, seq_char = seq_char, est = est))
             }
@@ -117,7 +146,7 @@ shinyServer(function(input, output, session)
                   product_size <- c(input$product_min, input$product_max)
                   f_name <- paste(working.dir, input$input_file, sep = .Platform$file.sep)
                   primer3 <- PLAYRDesign:::run_primer3(f_name, 
-                                                     n = input$oligos_to_report, len = len, tm = tm, gc = gc, product_size = product_size)
+                              n = input$oligos_to_report, len = len, tm = tm, gc = gc, product_size = product_size, playrdesign_opt = playrdesign_opt)
                   return(primer3$tab_primers)
       })
       

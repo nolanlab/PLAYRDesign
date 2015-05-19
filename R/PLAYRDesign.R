@@ -18,7 +18,7 @@ PLAYRDesign.filter_refseq_file <- function(in_name, out_name)
 }
 
 #' @export
-PLAYRDesign.convert_est_to_RData <- function(in_name, out_name = "spliced_est_hg19.RData")
+PLAYRDesign.convert_est_to_RData <- function(in_name, out_name)
 {
       tab <- read.table(in_name, header = T, sep = "\t", comment.char = "", stringsAsFactors = F)
       names(tab) <- gsub("X\\.", "", names(tab))
@@ -235,7 +235,7 @@ get_tm <- function(s)
 
       
       
-run_primer3 <- function(f_name, n, len, tm, gc, product_size)
+run_primer3 <- function(f_name, n, len, tm, gc, product_size, playrdesign_opt)
 {
       opt <- list()
       v <- c("MIN", "OPT", "MAX")
@@ -249,13 +249,14 @@ run_primer3 <- function(f_name, n, len, tm, gc, product_size)
       seq <- as.character(seq, use.names = F)
       s <- c(s, sprintf("SEQUENCE_TEMPLATE=%s", seq))
       s <- c(s, sprintf("PRIMER_NUM_RETURN=%d", n))
+      s <- c(s, sprintf("PRIMER_THERMODYNAMIC_PARAMETERS_PATH=%s", playrdesign_opt$PRIMER3_CONFIG))
       
       template <- list.files(path = file.path(system.file(package = "PLAYRDesign")), pattern = "primer3_settings_template.txt", full.names = T)
       template <- readLines(template)
       primer3_input_fname <- paste(f_name, "PLAYRDesign_primer3_input.txt", sep = ".")
       primer3_output_fname <- paste(f_name, "PLAYRDesign_primer3_output.txt", sep = ".")
       cat(s, template, file = primer3_input_fname, sep = "\n")      
-      system(sprintf("primer3_core -output=%s %s", primer3_output_fname, primer3_input_fname))
+      system(sprintf("%s -output=%s %s", playrdesign_opt$PRIMER3_EXEC, primer3_output_fname, primer3_input_fname))
       
       return(parse_primer3_output(primer3_output_fname))
 }
@@ -315,9 +316,9 @@ get_seq_from_ranges <- function(gr)
 }
 
 
-get_exons_for_transcript <- function(id)
+get_exons_for_transcript <- function(id, txdb_file)
 {
-      txdb <- loadDb(system.file("UCSC_Refseq_transcripts.sqlite", package = "PLAYRDesign"))
+      txdb <- loadDb(txdb_file)
       #Remove weird chromosomes
       tab <- select(txdb, keys = id, keytype="TXNAME", columns = columns(txdb))
       tab <- tab[grep("_", tab$EXONCHROM, invert = T),]
@@ -425,12 +426,13 @@ get_exons_skips <- function(gr.gene, gr.est)
 }
 
 
-run_blast_analysis_for_seq <- function(f_name, db, filter_same_gi)
+run_blast_analysis_for_seq <- function(f_name, db, filter_same_gi, playrdesign_opt)
 {
       seq_length <- nchar(readDNAStringSet(f_name))
       blast.f_name <- sprintf("%s_%s.blast_out.txt", f_name, db)
       print("Running BLAST")
-      system(paste("blastn -db", db, "-query", f_name, "-task blastn -outfmt 6 >",  blast.f_name))
+      system(sprintf("%s -db %s -query %s -task blastn -outfmt 6 > %s",
+                     playrdesign_opt$BLASTN_EXEC, file.path(playrdesign_opt$BLASTN_DB, db), f_name, blast.f_name))
       print("Done")
       res <- parse_blast_result_txt(blast.f_name, filter_same_gi)
       dj <- disjoin_reduce_blast_ranges(res)

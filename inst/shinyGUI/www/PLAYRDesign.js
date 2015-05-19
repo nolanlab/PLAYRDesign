@@ -305,7 +305,7 @@ $.extend(graphOutputBinding, {
             
            
             var oligo_plot_svg = d3.select(el).append("svg");
-            height = height * 3;
+            height = height * 4;
             oligo_plot_svg = oligo_plot_svg.attr("width", width + margin.left + margin.right)
                   .attr("height", height + margin.top + margin.bottom)
                   .attr("id", "oligo_plot")
