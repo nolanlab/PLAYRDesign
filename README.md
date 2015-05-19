@@ -48,14 +48,14 @@ The installation of BLAST+ could be the subject of an entire book. Only minimal 
 
 PLAYRDesign makes use of two sequence databases, one contains repetitive sequences for the organism of interest, the other is a database of all the transcript in the organism of interest. These database are used to avoid as much as possible the selection of probes that either match repetive sequences, or transcripts for different genes. (All FASTA sequence database files have to be saved with the *.fa* extension).
 
-Instructions are given here for designing probes for human transcripts. The repetitive sequences can be downloaded from [Repbase](http://www.girinst.org/repbase/). Download the *humrep.ref* and *simple.ref* in FASTA format and concatenate them to generate the *repbase.fa* file. The Human RefSeq RNA sequences can be downloaded by visiting the NCBI ftp server (ftp://ftp.ncbi.nlm.nih.gov/), navigating to the **refseq -> H_sapiens -> H_sapiens -> RNA** folder and selecting the *rna.fa.gz* file. We reccomend filtering this file to only contain *NR* and *NM* records. You can do so by using the *filter_refseq_file* function included in the PLAYRDesign R package (unpack the *rna.fa.gz* file first).
+Instructions are given here for designing probes for human transcripts. The repetitive sequences can be downloaded from [Repbase](http://www.girinst.org/repbase/). Download the *humrep.ref* and *simple.ref* in FASTA format and concatenate them to generate the *repbase.fa* file. The Human RefSeq RNA sequences can be downloaded by visiting the NCBI ftp server (ftp://ftp.ncbi.nlm.nih.gov/), navigating to the **refseq -> H_sapiens -> H_sapiens -> RNA** folder and selecting the *rna.fa.gz* file. We reccomend filtering this file to only contain *NR* and *NM* records. You can do so by using the *filter_refseq_file* function included in the PLAYRDesign R package (unpack the *rna.fa.gz* file first). For the purpose of this example use *rna_human_high_qual.fa* as the output file name.
 
 ```
 library(PLAYRDesign)
 PLAYRDesign.filter_refseq_file("PUT PATH TO INPUT FILE HERE", "PATH TO OUTPUT FILE HERE")
 ```
 
-At this point you should have two sequence files in FASTA format, called *repbase.fa* and *rna_human_high_qual.fa*. Move both files to the BLAST+ database directory and convert them to BLAST+ databases by typing these commands (the *makeblastdb* program must be in your PATH, see above). Refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK279688/) for additional details on how to use *makeblastdb*.
+Move both files to the BLAST+ database directory and convert them to BLAST+ databases by typing these commands (the *makeblastdb* program must be in your PATH, or you have to call it by specifying the full path to the executable). Refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK279688/) for additional details on how to use *makeblastdb*.
 
 ```
 makeblastdb -in repbase.fa -parse_seqids -dbtype nucl
@@ -63,18 +63,36 @@ makeblastdb -in rna_human_high_qual.fa -parse_seqids -dbtype nucl
 
 ```
 
-If everything was successful you should be able to type the following commands in an R session
+
+### Generating EST and exon information
+
+PLAYRDesign depends on two pieces of data to determine the exon structure of a gene and its overlap with ESTs. This section explains how to generate this data, see the *Configuring PLAYRDesign* section for details regarding where these files should be store.
+
+#### Generating EST information
+
+Access the UCSC Table Browser [here](https://genome.ucsc.edu/cgi-bin/hgTables) and select the **intronEst** table from the **Spliced ESTs** track in the **mRNA and EST** group. To shorten the download and processing times, after you press the *get output* button, you can select only the following fields, which are used by PLAYRDesign.
 
 ```
-system("blastn -db repbase.fa")
-system("blastn -db rna_human_high_qual.fa")
+strand, tName, tStart, tEnd, blockSizes, tStarts
 ```
-
-and get the following error message, which indicates that R can find your *blastn* executable and your database file, even though not input sequence is provided
+Save the file on your computer and use the following function from the PLAYRDesign R package to convert the txt file into the format that will be used by PLAYRDesign. The output file must have the extension *.RData* (The command will probably take a while to run).
 
 ```
-Command line argument error: Query is Empty!
+PLAYRDesign.convert_est_to_RData("PUT THE PATH TO THE INPUT FILE HERE", "PUT THE PATH TO THE INPUT FILE HERE")
 ```
+
+#### Regenerating Exon information
+
+Type the following commands in R (in older version of Bioconductor the **makeTxDbFromUCSC** was called **makeTranscriptDbFromUCSC**, but it works the same). The output file must have the extension *.sqlite*.
+
+```
+library(GenomicFeatures)
+txdb <-  makeTxDbFromUCSC(genome = "hg19", tablename = "refGene")
+saveDb(txdb, "PUT THE PATH TO THE OUTPUT FILE HERE")
+```
+
+## Usage
+
 
 
 If evertyhing was successful you should be able to start PLAYRDesign by typing the following commands
@@ -83,48 +101,25 @@ If evertyhing was successful you should be able to start PLAYRDesign by typing t
 library(PLAYRDesign)
 PLAYRDesign.run()
 ```
-to stop PLAYRDesign simply hit the "ESC" key in your R session.
+When you start PLAYRDesign you will be prompted to select a file: select *any* file that is located in the directory you want to be used as the PLAYRDesign **working directory**. (Ideally we would have you select the directory itself instead of a file, but R does not allow to do this in a platform-independent way). Note that the content of the directory is only read at startup so all the necessary files need to be present when you start the GUI, in order for them to be accessible.
 
-### Regenerating EST and exon information
+.To stop PLAYRDesign simply hit the "ESC" key in your R session. 
 
-PLAYRDesign depends on two pieces of data to determine the exon structure of a gene and its overlap with ESTs. The data files are provided in the **inst/** subdirectory of the package and are named **spliced_est_hg19.RData** and **UCSC_Refseq_transcripts.sqlite**. When you install the R package these files are automatically copied in the installation directory. This section explains how to regenerate these data files from scratch, in case you wanted to upgrade EST or exon definitions. After you have generated new versions of these files you will have to move them in their installation directory. To determine the location of the installation directory on your machine, type the following command in an R session
+### Configuring PLAYRDesign
 
-```
-system.file("spliced_est_hg19.RData", package = "PLAYRDesign")
-```
-
-#### Regenerating EST information
-
-Access the UCSC Table Browser [here](https://genome.ucsc.edu/cgi-bin/hgTables) and select the **intronEst** table from the **Spliced ESTs** track in the **mRNA and EST** group. To shorten the download and processing times, after you press the *get output* button, you can select only the following fields, which are used by PLAYRDesign.
+PLAYRDesign needs to know the location of external programs and data files to run. These locations are specified in a file that must be named *playrdesign_opt.txt" and must be located in your PLAYRDesign working directory. An example of the format of the file is given below, substitute the relevant paths for your specific installation.
 
 ```
-strand, tName, tStart, tEnd, blockSizes, tStarts
+BLASTN_EXEC=/usr/bin/blastn           (The full PATH to the blastn executable)
+BLASTN_DB=/opt/BLAST/          (The directory containing your BLAST database files)
+PRIMER3_EXEC=/usr/bin/primer3_core    (The full PATH to the primer3_core executable)
+PRIMER3_CONFIG=/opt/primer3_config/   (The primer3_config directory that is found in the primer3 distribution, see above)
+PLAYRDESIGN_DATA=/opt/PLAYRDesign_data   (The directory containing the EST and exon data, see above)
 ```
-Save the file on your computer and use the following function from the PLAYRDesign R package to convert the txt file into the format that will be used by PLAYRDesign
-
-```
-PLAYRDesign.convert_est_to_RData("PUT THE PATH TO THE INPUT FILE HERE")
-```
-
-The command will take a while to run and will  generate a file called **spliced_est_hg19.RData** which you can then move to the PLAYRDesign installation folder (see above).
-
-#### Regenerating Exon information
-
-Type the following commands in R (in older version of Bioconductor the **makeTxDbFromUCSC** was called **makeTranscriptDbFromUCSC**, but it works the same)
-
-```
-library(GenomicFeatures)
-txdb <-  makeTxDbFromUCSC(genome = "hg19", tablename = "refGene")
-saveDb(txdb, "UCSC_Refseq_transcripts.sqlite")
-```
-
-This will create a file named **UCSC_Refseq_transcripts.sqlite** in your working directory, which you can then move in the PLAYRDesign installation directory.
-
-## Usage
 
 ### Starting the analysis
 
-First download the sequence of the transcript for which you want to design probes in FASTA format and save it in a plain text file with a .fasta extension. Because of the various databases that PLAYRDesign uses during the analysis, at present the software only works with human sequences. Support for additional species may be added in the future.
+First download the sequence of the transcript for which you want to design probes in FASTA format and save it in a plain text file with a .fasta extension.
 
 PLAYRDesign parses the FASTA descritpion line to extract the accession number of the transcript. The accession is used to:
 - eliminate BLAST matches to the same transcript
@@ -139,15 +134,7 @@ The FASTA line has to use the standard NCBI format which looks similar to this
 
 in practice the best option is to download RefSeq transcripts from the NCBI [nucleotide](http://www.ncbi.nlm.nih.gov/nuccore/) database, preferably choosing *NR* and *NM* records. We recommend choosing the longest isoform of the transcript because the software will show which exons can undergo alternative splicing. 
 
-When you start the PLAYRDesign software you will be prompted to select a file: you can choose *any* .fasta file that is located in the directory which contains your transcript sequences. This directory will be your **working directory**.
-
-Your R window will then show the message 
-
-```
-"Loading EST data..."
-```
-
-this will take a couple of minutes. When the process is completed the PLAYRDesign controls will appear in your browser window. In the GUI use the "Select input file" dropdown to select the fasta file you want to design probes for. The boxes with the numeric values are for setting parameteres for the primer3 software. The defaults are the values used in the paper.
+In the GUI first select the different EST, exon, repetitive sequence and transcript databases and then use the "Select input file" dropdown to select the fasta file you want to design probes for. The boxes with the numeric values are for setting parameteres for the primer3 software. The defaults are the values used in the paper.
 Once you are ready hit the "Start analysis" button. Several messages should appear in your R window as the software is running. Once the analysis is completed a number of plots will appear in the browser window
 
 ### Selecting probes
