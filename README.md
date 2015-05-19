@@ -81,7 +81,7 @@ Save the file on your computer and use the following function from the PLAYRDesi
 PLAYRDesign.convert_est_to_RData("PUT THE PATH TO THE INPUT FILE HERE", "PUT THE PATH TO THE INPUT FILE HERE")
 ```
 
-#### Regenerating Exon information
+#### Generating Exon information
 
 Type the following commands in R (in older version of Bioconductor the **makeTxDbFromUCSC** was called **makeTranscriptDbFromUCSC**, but it works the same). The output file must have the extension *.sqlite*. If you want to design probes for a different organism, change the *genome* parameter (refer to the GenomicFeatures documentation for details).
 
