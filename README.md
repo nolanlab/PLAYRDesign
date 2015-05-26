@@ -19,7 +19,7 @@ Open an R session and type the following commands
 ```
 source("http://bioconductor.org/biocLite.R")
 biocLite(c("AnnotationDbi", "AnnotationFuncs", "BSgenome", "BSgenome.Hsapiens.UCSC.hg19", 
-"Biostrings", "GenomicFeatures", "GenomicRanges", "IRanges", "org.Hs.eg.db"))
+"Biostrings", "GenomicFeatures", "S4Vectors", "GenomicRanges", "IRanges", "org.Hs.eg.db"))
 ```
 ### Install PLAYRDesign
 
