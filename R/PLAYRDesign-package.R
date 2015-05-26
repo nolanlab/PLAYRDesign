@@ -15,5 +15,6 @@
 #' @import BSgenome.Hsapiens.UCSC.hg19
 #' @import org.Hs.eg.db
 #' @import Biostrings
+#' @import S4Vectors
 
 NULL
