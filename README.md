@@ -104,7 +104,7 @@ When you start PLAYRDesign you will be prompted to select a file: select *any* f
 
 ### Configuring PLAYRDesign
 
-PLAYRDesign needs to know the location of external programs and data files to run. These locations are specified in a file that must be named *playrdesign_opt.txt" and must be located in your PLAYRDesign working directory. An example of the format of the file is given below, substitute the relevant paths for your specific installation.
+PLAYRDesign needs to know the location of external programs and data files to run. These locations are specified in a file that must be named **playrdesign_conf.txt** and must be located in your PLAYRDesign working directory. An example of the format of the file is given below, substitute the relevant paths for your specific installation.
 
 ```
 BLASTN_EXEC=/usr/bin/blastn           (The full path to the blastn executable)
