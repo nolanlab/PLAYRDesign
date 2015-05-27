@@ -58,7 +58,7 @@ PLAYRDesign.filter_refseq_file("PUT PATH TO INPUT FILE HERE", "PATH TO OUTPUT FI
 Move both files to the BLAST+ database directory and convert them to BLAST+ databases by typing these commands (the *makeblastdb* program must be in your PATH, or you have to call it by specifying the full path to the executable). Refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK279688/) for additional details on how to use *makeblastdb*.
 
 ```
-makeblastdb -in repbase.fa -parse_seqids -dbtype nucl
+makeblastdb -in repbase.fa -dbtype nucl
 makeblastdb -in rna_human_high_qual.fa -parse_seqids -dbtype nucl
 
 ```
