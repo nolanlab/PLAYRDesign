@@ -73,7 +73,7 @@ PLAYRDesign depends on two pieces of data to determine the exon structure of a g
 Access the UCSC Table Browser [here](https://genome.ucsc.edu/cgi-bin/hgTables) and select the **intronEst** table from the **Spliced ESTs** track in the **mRNA and EST** group. To shorten the download and processing times, after you press the *get output* button, you can select only the following fields, which are used by PLAYRDesign.
 
 ```
-strand, tName, tStart, tEnd, blockSizes, tStarts
+strand, qName, tName, tStart, tEnd, blockSizes, tStarts
 ```
 Save the file on your computer and use the following function from the PLAYRDesign R package to convert the txt file into the format that will be used by PLAYRDesign. The output file must have the extension *.RData* (The command will probably take a while to run).
 
