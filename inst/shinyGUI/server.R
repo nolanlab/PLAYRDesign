@@ -97,11 +97,13 @@ shinyServer(function(input, output, session)
       working.dir <- dirname(file.choose())
       output$PLAYRDesignUI <- render_ui(working.dir, input, output, session)
       playrdesign_opt <- read_options_file(file.path(working.dir, "playrdesign_conf.txt"))
-
-      updateSelectInput(session, 
-            "est_file", choices = c("", list.files(playrdesign_opt$PLAYRDESIGN_DATA, pattern = ".RData$")))
-      updateSelectInput(session,
-            "txdb_file", choices = c("", list.files(playrdesign_opt$PLAYRDESIGN_DATA, pattern = ".sqlite$")))
+      if(!is.null(playrdesign_opt$PLAYRDESIGN_DATA) && playrdesign_opt$PLAYRDESIGN_DATA != "")
+      {
+            updateSelectInput(session, 
+                  "est_file", choices = c("", list.files(playrdesign_opt$PLAYRDESIGN_DATA, pattern = ".RData$")))
+            updateSelectInput(session,
+                  "txdb_file", choices = c("", list.files(playrdesign_opt$PLAYRDESIGN_DATA, pattern = ".sqlite$")))
+      }
       updateSelectInput(session,
             "rep_db", choices = c("", list.files(playrdesign_opt$BLASTN_DB, pattern = ".fa$")))
       updateSelectInput(session,
@@ -131,7 +133,10 @@ shinyServer(function(input, output, session)
                   blast_repbase <- PLAYRDesign:::run_blast_analysis_for_seq(f_name, db = input$rep_db, filter_same_gi = FALSE, playrdesign_opt)
                   blast <- data.frame(pos = blast_repbase$pos, blast1 = blast_refseq$percIdentity, blast2 = blast_repbase$percIdentity)
                   seq_char <- PLAYRDesign:::get_sequence_characteristics(f_name)
-                  est <- do_est_analysis(f_name, gr.est(), file.path(playrdesign_opt$PLAYRDESIGN_DATA, input$txdb_file))
+                  est.data <- gr.est()
+                  est <- NULL
+                  if(!is.null(est.data))
+                        est <- do_est_analysis(f_name, est.data, file.path(playrdesign_opt$PLAYRDESIGN_DATA, input$txdb_file))
                   
                   return(list(blast = blast, seq_char = seq_char, est = est))
             }

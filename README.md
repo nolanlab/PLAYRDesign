@@ -64,7 +64,9 @@ makeblastdb -in rna_human_high_qual.fa -parse_seqids -dbtype nucl
 ```
 
 
-### Generating EST and exon information
+### Generating EST and exon information (Optional)
+
+The following section is optional. If you don't want to take EST information into account skip this.
 
 PLAYRDesign depends on two pieces of data to determine the exon structure of a gene and its overlap with ESTs. This section explains how to generate this data, see the *Configuring PLAYRDesign* section for details regarding where these files should be stored.
 
@@ -111,7 +113,7 @@ BLASTN_EXEC=/usr/bin/blastn           (The full path to the blastn executable)
 BLASTN_DB=/opt/BLAST/                 (The directory containing your BLAST database files)
 PRIMER3_EXEC=/usr/bin/primer3_core    (The full path to the primer3_core executable)
 PRIMER3_CONFIG=/opt/primer3_config/   (The primer3_config directory that is found in the primer3 distribution, see above)
-PLAYRDESIGN_DATA=/opt/PLAYRDesign_data   (The directory containing the EST and exon data, see above)
+PLAYRDESIGN_DATA=/opt/PLAYRDesign_data   (The directory containing the EST and exon data, if you are using them, see above)
 ```
 
 ### Starting the analysis

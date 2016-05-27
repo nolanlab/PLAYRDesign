@@ -272,8 +272,9 @@ $.extend(graphOutputBinding, {
          renderValue: function(el, data)
          {
                var oligoArray = convert_primer3_res(data);
-               
-               var est_res = convert_data_for_plotting(data.est, "pos", "exon_skip");
+               var est_res = null;
+               if(data.est)
+                  est_res = convert_data_for_plotting(data.est, "pos", "exon_skip");
                var seq_char = convert_data_for_plotting(data.seq_char, "pos", "tm");
                var blast_res1 = convert_data_for_plotting(data.blast, "pos", "blast1");
                var blast_res2 = convert_data_for_plotting(data.blast, "pos", "blast2");
@@ -299,9 +300,11 @@ $.extend(graphOutputBinding, {
             do_plot(blast_res2, x_scale, svg, height, width, margin, "blast2", "line2");
             svg = d3.select(el).append("svg")
             do_plot(seq_char, x_scale, svg, height, width, margin, "seq_char", "line3");
-            svg = d3.select(el).append("svg")
-            do_plot(est_res, x_scale, svg, height, width, margin, "est_res", "line1");
-            
+            if(est_res) 
+            {
+                  svg = d3.select(el).append("svg")
+                  do_plot(est_res, x_scale, svg, height, width, margin, "est_res", "line1");
+            }
             
            
             var oligo_plot_svg = d3.select(el).append("svg");
