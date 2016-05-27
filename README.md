@@ -19,7 +19,7 @@ Open an R session and type the following commands
 ```
 source("http://bioconductor.org/biocLite.R")
 biocLite(c("AnnotationDbi", "AnnotationFuncs", "BSgenome", "BSgenome.Hsapiens.UCSC.hg19", 
-"Biostrings", "GenomicFeatures", "GenomicRanges", "IRanges", "org.Hs.eg.db"))
+"Biostrings", "GenomicFeatures", "S4Vectors", "GenomicRanges", "IRanges", "org.Hs.eg.db"))
 ```
 ### Install PLAYRDesign
 
@@ -58,7 +58,7 @@ PLAYRDesign.filter_refseq_file("PUT PATH TO INPUT FILE HERE", "PATH TO OUTPUT FI
 Move both files to the BLAST+ database directory and convert them to BLAST+ databases by typing these commands (the *makeblastdb* program must be in your PATH, or you have to call it by specifying the full path to the executable). Refer to the BLAST+ [manual](http://www.ncbi.nlm.nih.gov/books/NBK279688/) for additional details on how to use *makeblastdb*.
 
 ```
-makeblastdb -in repbase.fa -parse_seqids -dbtype nucl
+makeblastdb -in repbase.fa -dbtype nucl
 makeblastdb -in rna_human_high_qual.fa -parse_seqids -dbtype nucl
 
 ```
@@ -75,7 +75,7 @@ PLAYRDesign depends on two pieces of data to determine the exon structure of a g
 Access the UCSC Table Browser [here](https://genome.ucsc.edu/cgi-bin/hgTables) and select the **intronEst** table from the **Spliced ESTs** track in the **mRNA and EST** group. To shorten the download and processing times, after you press the *get output* button, you can select only the following fields, which are used by PLAYRDesign.
 
 ```
-strand, tName, tStart, tEnd, blockSizes, tStarts
+strand, qName, tName, tStart, tEnd, blockSizes, tStarts
 ```
 Save the file on your computer and use the following function from the PLAYRDesign R package to convert the txt file into the format that will be used by PLAYRDesign. The output file must have the extension *.RData* (The command will probably take a while to run).
 
@@ -106,7 +106,7 @@ When you start PLAYRDesign you will be prompted to select a file: select *any* f
 
 ### Configuring PLAYRDesign
 
-PLAYRDesign needs to know the location of external programs and data files to run. These locations are specified in a file that must be named *playrdesign_opt.txt" and must be located in your PLAYRDesign working directory. An example of the format of the file is given below, substitute the relevant paths for your specific installation.
+PLAYRDesign needs to know the location of external programs and data files to run. These locations are specified in a file that must be named **playrdesign_conf.txt** and must be located in your PLAYRDesign working directory. An example of the format of the file is given below, substitute the relevant paths for your specific installation.
 
 ```
 BLASTN_EXEC=/usr/bin/blastn           (The full path to the blastn executable)
