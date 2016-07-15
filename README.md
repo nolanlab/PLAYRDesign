@@ -6,7 +6,9 @@ PLAYRDesign uses the FASTA format for all sequence inputs. All the FASTA headers
 
 `>gi|90704850|ref|NM_002984.2|`
 
-PLAYRDesign splits the header on the **"|"** character and gets the sequence accession from the fourth field (e.g. NM_002984.2 in the above example). If your headers are in a different format you will have to convert them to this format. Only the contents of the fourth field really matter, you can put anything you want in the other fields.
+PLAYRDesign splits the header on the **"|"** character and gets the sequence accession from the fourth field (e.g. NM_002984.2 in the above example). If your headers are in a different format you will have to convert them to this format. Only the contents of the fourth field really matter, you can put anything you want in the other fields but the header you create should still have the format
+
+`>gi|NUMBER|ref|YOUR ACCESSION|`
 
 ## Installation
 
