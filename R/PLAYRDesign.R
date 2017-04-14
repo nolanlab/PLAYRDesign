@@ -431,7 +431,7 @@ run_blast_analysis_for_seq <- function(f_name, db, filter_same_gi, playrdesign_o
       seq_length <- nchar(readDNAStringSet(f_name))
       blast.f_name <- sprintf("%s_%s.blast_out.txt", f_name, db)
       print("Running BLAST")
-      system(sprintf("%s -db %s -query %s -task blastn -outfmt 6 > %s",
+      system(sprintf("%s -db %s -query %s -task blastn -outfmt 6 -out %s",
                      playrdesign_opt$BLASTN_EXEC, file.path(playrdesign_opt$BLASTN_DB, db), f_name, blast.f_name))
       print("Done")
       res <- parse_blast_result_txt(blast.f_name, filter_same_gi)
